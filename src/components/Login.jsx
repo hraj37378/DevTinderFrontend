@@ -1,22 +1,31 @@
 import { useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
-    const [emailId, setEmailId] = useState("harsh@gmail.com");
-    const [password, setPassword] = useState("Harsh@12345");
-
-    const handleLogin = async() =>{
-        try {
-            const res = await axios.post("http://localhost:3000/login", {
-                emailId,
-                password
-            },{withCredentials: true}); 
-            console.log(res.data);
-        } catch (error) {
-            console.log(error.message);
-        }
-
+  const [emailId, setEmailId] = useState("harsh@gmail.com");
+  const [password, setPassword] = useState("Harsh@12345");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post(
+        BASE_URL + "/login",
+        {
+          emailId,
+          password,
+        },
+        { withCredentials: true }
+      );
+      dispatch(addUser(res.data));
+      return navigate("/");
+    } catch (error) {
+      console.log(error.message);
     }
+  };
 
   return (
     <div className="flex justify-center my-10">
@@ -32,7 +41,7 @@ const Login = () => {
                 type="text"
                 value={emailId}
                 className="input input-bordered w-full max-w-xs"
-                onChange={(e)=> setEmailId(e.target.value)}
+                onChange={(e) => setEmailId(e.target.value)}
               />
             </label>
             <label className="form-control w-full max-w-xs my-2">
@@ -48,7 +57,10 @@ const Login = () => {
             </label>
           </div>
           <div className="card-actions justify-center">
-            <button className="btn btn-primary" onClick={handleLogin}> Login </button>
+            <button className="btn btn-primary" onClick={handleLogin}>
+              {" "}
+              Login{" "}
+            </button>
           </div>
         </div>
       </div>
